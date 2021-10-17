@@ -53,7 +53,17 @@
             </div><!-- end row -->
 			<div class="row mt-5"> 
 
-                <% for(let i=0; i < courses.length; i++) {%>
+				<% let displayCourses =  courses; %>
+				<!-- <% if(user.role === 'teacher') { %>
+					displayCourses =  courses;
+				<% } %> -->
+
+				<% if(user.role === 'student') {
+					displayCourses =  user.courses;
+				} %>
+                
+				
+				<% for(let i=0; i < displayCourses.length; i++) {%>
 					<div class="col-lg-6 col-md-6 col-12">
 						<div class="course-item mb-5">
 							<div class="image-blog">
@@ -61,11 +71,21 @@
 							</div>
 							<div class="course-br">
 								<div class="course-title">
-									<h2><a href="/courses/<%= courses[i].slug%>" title=""><%= courses[i].name%></a></h2>
+									<h2><a href="/courses/<%= displayCourses[i].slug%>" title=""><%= displayCourses[i].name%></a></h2>
 								</div>
 								<div class="course-desc">
-									<p><%= courses[i].description%></p>
+									<p><%= displayCourses[i].description.substring(0,30) + '...' %></p>
 								</div>
+								
+								<% if(user.role === 'student') {%>
+									<div class="post-date">
+										<form method="post" action="/courses/release">
+											<input type="hidden" name="course_id" value="<%= displayCourses[i]._id %>">
+											<button type="submit" class="btn btn-lg btn-danger text-white"><span>Release</span></button>
+										</form>
+									</div>
+								<% } %>
+
 							</div>
 						</div>
 					</div><!-- end col -->

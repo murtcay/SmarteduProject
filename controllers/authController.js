@@ -21,7 +21,7 @@ exports.loginUser = async (req, res) => {
     try{
         const {email, password} = req.body;
         const user = await User.findOne( { email: email } );
-
+        
         if(user) {
             bcrypt.compare(
                 password, 
@@ -37,6 +37,7 @@ exports.loginUser = async (req, res) => {
                             error: 'Wrong user credentials!'
                         });
                     }
+                    
                 }
             );
         }
@@ -57,7 +58,7 @@ exports.logoutUser = (req, res) => {
 };
 
 exports.getDashboardPage = async (req, res) => {
-    const user = await User.findOne({_id: req.session.userID});
+    const user = await User.findOne({_id: req.session.userID}).populate('courses');
     const categories = await Category.find();
     const courses = await Course.find({user: req.session.userID}).sort('-dateCreated');
 
