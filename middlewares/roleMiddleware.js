@@ -1,12 +1,12 @@
 module.exports = (roles) => {
     return (req, res, next) => {
-        const userRole = req.body.role.toLowerCase();
+        const userRole = req.body.role;
         if(roles.includes(userRole)) {
             next();
         }
         else {
             return res.status(401).json({
-                status: 'fail',
+                status: 'fail user role',
                 error: 'Unknown user role!'
             });
         }

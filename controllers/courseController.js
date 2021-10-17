@@ -5,13 +5,10 @@ exports.createCourse = async (req, res) => {
     const course = await Course.create(req.body);
     
     try {
-        res.status(201).json({
-            status: 'success',
-            course: course
-        });
+        res.status(201).redirect('/courses');
     } catch (error) {
         res.status(400).json({
-            status: 'fail',
+            status: 'fail course creation',
             error: error
         });
     }
@@ -29,7 +26,7 @@ exports.getAllCourses = async (req, res) => {
             filter = {category: category._id};
         }
 
-        const courses = await Course.find(filter);
+        const courses = await Course.find(filter).sort('-dateCreated');
         const categories = await Category.find();
 
         res.status(200).render('courses', {
@@ -39,7 +36,7 @@ exports.getAllCourses = async (req, res) => {
         });
     } catch (error) {
         res.status(400).json({
-            status: 'fail',
+            status: 'fail getting all courses ',
             error: error
         });
     }
@@ -54,7 +51,7 @@ exports.getCourse = async (req, res) => {
         });
     } catch (error) {
         res.status(400).json({
-            status: 'fail',
+            status: 'fail getting a course',
             error: error
         });
     }

@@ -1,5 +1,6 @@
-const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const User = require('../models/User');
+const Category = require('../models/Category');
 
 exports.createUser = async (req, res) => {
     try{
@@ -9,7 +10,7 @@ exports.createUser = async (req, res) => {
     }
     catch (error) {
         res.status(400).json({
-            status: 'fail',
+            status: 'fail user creation',
             error: error
         });
     }
@@ -31,7 +32,7 @@ exports.loginUser = async (req, res) => {
                     }
                     else {
                         res.status(400).json({
-                            status: 'fail',
+                            status: 'fail login',
                             error: 'Wrong user credentials!'
                         });
                     }
@@ -42,7 +43,7 @@ exports.loginUser = async (req, res) => {
     }
     catch (error) {
         res.status(400).json({
-            status: 'fail',
+            status: 'fail login',
             error: error
         });
     }
@@ -56,9 +57,11 @@ exports.logoutUser = (req, res) => {
 
 exports.getDashboardPage = async (req, res) => {
     const user = await User.findOne({_id: req.session.userID});
+    const categories = await Category.find();
 
     res.status(200).render('dashboard', {
         page_name: 'dashboard', 
-        user: user
+        user: user,
+        categories: categories
     });
 };
