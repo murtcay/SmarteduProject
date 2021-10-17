@@ -21,8 +21,6 @@ exports.createUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
     try{
         const {email, password} = req.body;
-        console.log('email: ', email);
-        
         const user = await User.findOne( { email: email } );
 
         if(user) {
@@ -31,10 +29,8 @@ exports.loginUser = async (req, res) => {
                 user.password, 
                 (err, same) => {
                     if(same) {
-                        res.status(200).json({
-                            status: 'success',
-                            error: 'You are successfully logged in!'
-                        });
+                        req.session.userID = user._id;
+                        res.status(200).redirect('/');
                     }
                     else {
                         res.status(400).json({
