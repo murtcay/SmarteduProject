@@ -92,6 +92,9 @@ exports.enrollCourse = async (req, res) => {
         const user = await User.findById(req.session.userID);
         await user.courses.push({_id:req.body.course_id});
         await user.save();
+        
+        const course =  await Course.findById(req.body.course_id);
+        req.flash('success', `Successfully enrolled the course ${course.name}`);
 
         res.status(200).redirect('/users/dashboard');
     } catch (error) {
@@ -107,6 +110,9 @@ exports.releaseCourse = async (req, res) => {
         const user = await User.findById(req.session.userID);
         await user.courses.pull({_id:req.body.course_id});
         await user.save();
+
+        const course =  await Course.findById(req.body.course_id);
+        req.flash('success', `You have successfully release from  ${course.name} course.`);
 
         res.status(200).redirect('/users/dashboard');
     } catch (error) {
