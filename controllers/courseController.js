@@ -3,20 +3,19 @@ const Category = require('../models/Category');
 const User = require('../models/User');
 
 exports.createCourse = async (req, res) => {
-    const course = await Course.create({
-        name: req.body.name,
-        description: req.body.description,
-        category: req.body.category,
-        user: req.session.userID
-    });
-    
     try {
+        const course = await Course.create({
+            name: req.body.name,
+            description: req.body.description,
+            category: req.body.category,
+            user: req.session.userID
+        });
+        
+        req.flash('success', `${course.name} has been created successfully.`);
         res.status(201).redirect('/courses');
     } catch (error) {
-        res.status(400).json({
-            status: 'fail course creation',
-            error: error
-        });
+        req.flash('error', 'Something went wrong!... :(');
+        res.status(400).redirect('/courses');
     }
 };
 
@@ -51,7 +50,7 @@ exports.getAllCourses = async (req, res) => {
             },
             {category: filter.category}
           ]
-        }).sort('-createdAt').populate('user');
+        }).sort('-dateCreated').populate('user');
 
         const categories = await Category.find();
 
