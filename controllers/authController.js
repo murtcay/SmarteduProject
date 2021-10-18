@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const { validationResult } = require('express-validator');
 const User = require('../models/User');
 const Category = require('../models/Category');
 const Course = require('../models/Course');
@@ -10,10 +11,14 @@ exports.createUser = async (req, res) => {
         res.status(201).redirect('/login');
     }
     catch (error) {
-        res.status(400).json({
-            status: 'fail user creation',
-            error: error
-        });
+
+        const errors = validationResult(req);
+        let errorMessage = '';
+        for (let i = 0; i < errors.array().length; i++) {
+            errorMessage += `${errors.array()[i].msg} `;
+        }
+        req.flash('error', errorMessage);    
+        res.status(400).redirect('/register');
     }
 };
 
@@ -32,14 +37,16 @@ exports.loginUser = async (req, res) => {
                         res.status(200).redirect('/users/dashboard');
                     }
                     else {
-                        res.status(400).json({
-                            status: 'fail login',
-                            error: 'Wrong user credentials!'
-                        });
+                        req.flash('error', 'Invalid User Credentials'); 
+                        res.status(400).redirect('/login');
                     }
                     
                 }
             );
+        }
+        else {
+            req.flash('error', 'Invalid User Credentials'); 
+            res.status(400).redirect('/login');
         }
         
     }
