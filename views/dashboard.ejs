@@ -48,6 +48,19 @@
 							<img src="/images/author.jpg" alt="about author">
 						</div>
 					</div>
+					<% if(flashMessages) { %>
+						<div class="blog-author">
+							<% if(flashMessages.success) { %>
+								<div class="alert alert-success">
+									<b><%= flashMessages.success %></b>
+								</div>
+							<% } else if(flashMessages.error) { %>
+								<div class="alert alert-danger">
+									<b><%= flashMessages.error %></b>
+								</div>
+							<% } %>
+						</div>
+					<% } %>
 					
                 </div><!-- end col -->
             </div><!-- end row -->
@@ -77,14 +90,29 @@
 									<p><%= displayCourses[i].description.substring(0,30) + '...' %></p>
 								</div>
 								
-								<% if(user.role === 'student') {%>
+								
+
+								<% if(user.role === 'student') {%> <!-- For Student -->
 									<div class="post-date">
 										<form method="post" action="/courses/release">
 											<input type="hidden" name="course_id" value="<%= displayCourses[i]._id %>">
 											<button type="submit" class="btn btn-lg btn-danger text-white"><span>Release</span></button>
 										</form>
 									</div>
+								
+								<% } else if(user.role === 'teacher') { %> <!-- For Teacher -->
+									<div class="clearfix">
+										<ul style="list-style-type: none;">
+											<li style="float: left;"><button class="btn btn-primary rounded-0 text-white"><span>UPDATE</span></button></li>
+											<li style="float: right;">
+												<a href="/courses/<%= displayCourses[i].slug %>?_method=DELETE" onclick="return confirm('ARE YOU SURE ?')" class="btn btn-danger rounded-0 text-white"> 
+													<span>DELETE</span>
+												</a>
+											</li>
+										</ul>
+									</div>
 								<% } %>
+								
 
 							</div>
 						</div>
