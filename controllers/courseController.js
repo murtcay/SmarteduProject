@@ -125,7 +125,6 @@ exports.releaseCourse = async (req, res) => {
 
 exports.deleteCourse = async (req, res) => {
     try {
-        console.log('req.params.slug: ',req.params.slug);
 
         const course = await Course.findOneAndDelete({slug: req.params.slug});
         req.flash('error', `${course.name} has been deleted successfully.`);

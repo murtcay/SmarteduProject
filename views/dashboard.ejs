@@ -4,8 +4,16 @@
 	
 	<div class="all-title-box">
 		<div class="container text-center">
-			<h1>COURSES</h1>
+			<% if(user.role === 'teacher') {%>
+				<h1>CREATED COURSES</h1>
+			<% } else if (user.role === 'student') { %>
+				<h1>ENROLLED COURSES</h1>
+			<% } else { %> 
+				<h1>ADMIN PAGE</h1>
+			<% } %>
+			
 		</div>
+		
 	</div>
 	
     <div id="overviews" class="section wb">
@@ -75,7 +83,35 @@
 					displayCourses =  user.courses;
 				} %>
                 
-				
+				<% if(user.role === 'admin') {%>
+					<table class="table">
+						<thead>
+						  <tr>
+							<th scope="col">ID#</th>
+							<th scope="col">Email</th>
+							<th scope="col">Role</th>
+							<th scope="col">Delete</th>
+						  </tr>
+						</thead>
+						<tbody>
+							<% for(let i=0; i < users.length; i++) {%>
+								<tr>
+									<th scope="row"><%= users[i]._id %></th>
+									<td><%= users[i].email %></td>
+									<td><%= users[i].role%></td>
+									<td>
+										<!-- To prevent the delete himself / herself. For admin -->
+										<% if(user.email !== users[i].email) {%>
+											<a href="/users/<%= users[i]._id %>?_method=DELETE" onclick="return confirm('ARE YOU SURE ?')" class="btn btn-danger rounded-0 text-white"> 
+												<span>DELETE</span>
+											</a>
+										<% } %>
+									</td>
+								</tr>
+							<% } %>
+						</tbody>
+					  </table>
+				<% } else { %>
 				<% for(let i=0; i < displayCourses.length; i++) {%>
 					<div class="col-lg-6 col-md-6 col-12">
 						<div class="course-item mb-5">
@@ -176,6 +212,9 @@
 						</div>
 					</div><!-- end col -->
 				<% } %>
+				<% } %>
+
+
 
             </div><!-- end row -->
         </div><!-- end container -->
